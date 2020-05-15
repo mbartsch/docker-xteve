@@ -20,7 +20,7 @@ CRON_FILE=/config/cron.txt
 if [ -f "$CRON_FILE" ]; then
 	. $CRON_FILE
 else
-	printf '0  0  *  *  *  /config/cronjob.sh' > /etc/crontabs/root
+	printf '0  0  *  *  *  /config/cronjob.sh' > /etc/crontabs/daemon
 	cp /sample_cron.txt /config/sample_cron.txt
 fi
 
@@ -29,8 +29,9 @@ XTEVE_FILE=/config/xteve.txt
 if [ -f "$XTEVE_FILE" ]; then
 	. $XTEVE_FILE
 else
+        socat tcp-l:5004,fork,reuseaddr tcp:127.0.0.1:34400 &
 	cp /sample_xteve.txt /config/sample_xteve.txt
-	xteve -port=34400 -config=/root/.xteve/
+	xteve -port=34400 -config=/config/cfg
 fi
 
 exit
